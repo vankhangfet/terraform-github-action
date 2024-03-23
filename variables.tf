@@ -24,7 +24,15 @@ variable "subnet_parameters" {
     vpc_name   = string
     tags       = optional(map(string), {})
   }))
-  default = {}
+  default = {
+  subnet_action1 = {
+      cidr_block = "10.1.0.0/24"
+      vpc_name = "this"
+      tags = {}
+    }
+
+
+  }
 }
 
 variable "igw_parameters" {
@@ -33,7 +41,13 @@ variable "igw_parameters" {
     vpc_name = string
     tags     = optional(map(string), {})
   }))
-  default = {}
+  default = {
+    igw_action = {
+       vpc_name = "this"
+       tags = {}
+
+     }
+   }
 }
 
 
