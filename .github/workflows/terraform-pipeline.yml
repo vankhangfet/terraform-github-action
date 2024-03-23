@@ -1,57 +1,28 @@
-name: Terraform Pipeline
+name: Terraform Plan
 
 on:
   pull_request:
     branches:
       - develop
-      
-  issue_comment:
     types:
-      - created
-
+      - labeled
+      
 jobs:
-  terraform-plan:
+  terraform:
     runs-on: ubuntu-latest
+    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 2
-
-    - name: Check for "plan" label
-      id: label
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        script: |
-          const { context } = github;
-          const labelName = 'plan';
-          const prNumber = context.payload.pull_request.number;
-          const { data: labels } = await octokit.issues.listLabelsOnIssue({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: prNumber
-          });
-          return labels.some(label => label.name === labelName);
-
-    - name: Terraform init
-      if: steps.label.outputs.result == 'true'
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.3.0
-
-    - name: Terraform plan
-      if: steps.label.outputs.result == 'true'
-      run: terraform plan -out=plan.out
-
-  merge-pipeline:
-    needs:
-      - terraform-plan
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
-    steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v2
 
-    # Add your Terraform apply and other configuration steps here
-    # ...
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      if: github.event_name == 'pull_request' && contains(github.event.action, 'labeled') && github.event.pull_request.labels.*.name == 'plan' && github.event.pull_request.merged == false && github.event.pull_request.head.ref == 'develop' && github.event.pull_request.head.repo.full_name == github.repository
+      run: terraform plan -out=tfplan
