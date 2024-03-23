@@ -26,5 +26,4 @@ jobs:
       run: terraform init
 
     - name: Terraform Plan
-      if: github.event_name == 'pull_request' && contains(github.event.action, 'labeled') && github.event.pull_request.labels.*.name == 'plan' && github.event.pull_request.merged == false && github.event.pull_request.head.ref == 'develop' && github.event.pull_request.head.repo.full_name == github.repository
       run: terraform plan -out=tfplan
