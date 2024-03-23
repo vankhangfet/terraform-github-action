@@ -7,7 +7,7 @@ variable "vpc_parameters" {
     tags                 = optional(map(string), {})
   }))
   default = {
-   key1 = {
+   vpc_action = {
       cidr_block = "10.0.0.0/16"
       enable_dns_support = true
       enable_dns_hostnames = true
