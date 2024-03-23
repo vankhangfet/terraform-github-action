@@ -30,7 +30,11 @@ variable "subnet_parameters" {
       vpc_name = "this"
       tags = {}
     }
-
+ subnet_action1 = {
+      cidr_block = "10.2.0.0/24"
+      vpc_name = "this"
+      tags = {}
+    }
 
   }
 }
