@@ -3,7 +3,7 @@ name: Terraform Plan
 on:
   pull_request:
     branches:
-      - main
+      - develop
     types:
       - labeled
   # Allows you to run this workflow manually from the Actions tab
